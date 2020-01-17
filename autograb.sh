@@ -35,20 +35,23 @@ width="$(($x2-$x1))"
 height="$(($y2-$y1))"
 echo "width: " $width
 echo "height: " $height
+geometry="$width"x"$height"+"$x1"+"$y1"
+echo $geometry
+echo $windowid
 
 while true; do
-    maim -i $windowid -q > jp.png
+    maim -i $windowid -g $geometry -q > jp.png
     echo "screenshot captured"
     tesseract jp.png tout -l jpn 2> /dev/null
     echo "text parsed:"
     sed 's/ //g' tout.txt > tout2.txt
     cat tout2.txt
-    ./tokenize.py tout2.txt
+    ./tokenize.py `cat tout2.txt`
     #trans -brief "`cat tout2.txt`"
     #sleep 1
     #trans -s 日本語 --show-original n "`cat tout2.txt`"
     trans -s 日本語 -brief --show-original Y -i tout2.txt
     sleep 2
     rm tout.txt tout2.txt jp.png
-    sleep 30
+    sleep 10
 done
