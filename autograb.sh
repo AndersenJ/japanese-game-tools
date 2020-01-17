@@ -31,6 +31,10 @@ x2=`xdotool getmouselocation | grep -o "x:[0-9]*" | grep -o "[0-9]*"`
 y2=`xdotool getmouselocation | grep -o "y:[0-9]*" | grep -o "[0-9]*"`
 echo "x2:" $x2
 echo "y2:" $y2
+width="$(($x2-$x1))"
+height="$(($y2-$y1))"
+echo "width: " $width
+echo "height: " $height
 
 while true; do
     maim -i $windowid -q > jp.png
