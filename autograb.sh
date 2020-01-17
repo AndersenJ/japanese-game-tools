@@ -2,8 +2,15 @@
 
 echo "select window with mouse click"
 windowid=`xdotool selectwindow`
+windowpos=`xdotool getwindowgeometry $windowid | grep -o "[0-9]*,[0-9]*"`
+wx=`echo $windowpos | grep -o "^[0-9]*"`
+wy=`echo $windowpos | grep -o "[0-9]*$"`
+echo $windowpos
+echo $wx
+echo $wy
 sleep 2
-MOUSE_ID=$(xinput --list | grep -i -m 1 'mouse' | grep -o 'id=[0-9]\+' | grep -o '[0-9]\+')
+MOUSE_ID=$(xinput --list | grep -i -m 1 'mouse\|alps' | grep -o 'id=[0-9]\+' | grep -o '[0-9]\+')
+echo $MOUSE_ID
 
 echo "click top-left corner"
 STATE1=$(xinput --query-state $MOUSE_ID | grep 'button\[' | sort)
@@ -35,12 +42,14 @@ width="$(($x2-$x1))"
 height="$(($y2-$y1))"
 echo "width: " $width
 echo "height: " $height
-geometry="$width"x"$height"+"$x1"+"$y1"
+relx="$(($x1+wx))"
+rely="$(($y1+yx))"
+geometry="$width"x"$height"+"$relx"+"$rely"
 echo $geometry
 echo $windowid
 
 while true; do
-    maim -i $windowid -g $geometry -q > jp.png
+    maim -g $geometry -q > jp.png
     echo "screenshot captured"
     tesseract jp.png tout -l jpn 2> /dev/null
     echo "text parsed:"
@@ -52,6 +61,6 @@ while true; do
     #trans -s 日本語 --show-original n "`cat tout2.txt`"
     trans -s 日本語 -brief --show-original Y -i tout2.txt
     sleep 2
-    rm tout.txt tout2.txt jp.png
+#    rm tout.txt tout2.txt jp.png
     sleep 10
 done
