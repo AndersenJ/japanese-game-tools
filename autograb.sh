@@ -44,23 +44,40 @@ echo "width: " $width
 echo "height: " $height
 relx="$(($x1+wx))"
 rely="$(($y1+yx))"
-geometry="$width"x"$height"+"$relx"+"$rely"
+#geometry="$width"x"$height"+"$relx"+"$rely"
+geometry="$width"x"$height"+"$x1"+"$y1"
 echo $geometry
 echo $windowid
 
 while true; do
-    maim -g $geometry -q > jp.png
+    maim -g $geometry -q > jp.jpg
     echo "screenshot captured"
-    tesseract jp.png tout -l jpn 2> /dev/null
+
+    #time to preprocess the image before letting tesseract at it
+    #this works well with hatoful boyfriend
+    #convert jp.jpg -black-threshold 98% -negate jp2.jpg
+
+    #this works well with Crosscode
+    #convert jp.jpg -black-threshold 75% -negate jp2.jpg
+
+    #this works well with Xenoblade Chronicles 2
+    #convert jp.jpg -black-threshold 45% -negate jp2.jpg
+
+    #this works well with Celeste
+    convert jp.jpg -black-threshold 60% -negate jp2.jpg
+
+    tesseract jp2.jpg tout -l jpn --dpi 300 2> /dev/null
     echo "text parsed:"
     sed 's/ //g' tout.txt > tout2.txt
-    cat tout2.txt
+    sed 's/\n//g' tout2.txt > tout3.txt
+    cat tout3.txt
+    cat tout3.txt >> xenoblade.txt
     ./tokenize.py `cat tout2.txt`
-    #trans -brief "`cat tout2.txt`"
-    #sleep 1
+
+    #turns out trans has an API limit. Dang. Guess we can't use this.
+    # python-myougiden has potential though.
     #trans -s 日本語 --show-original n "`cat tout2.txt`"
-    trans -s 日本語 -brief --show-original Y -i tout2.txt
-    sleep 2
-#    rm tout.txt tout2.txt jp.png
-    sleep 10
+    #trans -s 日本語 -brief --show-original Y -i tout2.txt
+#    rm tout.txt tout2.txt jp.jpg
+    sleep 8
 done

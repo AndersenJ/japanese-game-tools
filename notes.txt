@@ -1,0 +1,9 @@
+command-line japanese to english dictionaries:
+dict-freedict-jpn-eng
+python-mougiden <- this one seems to actually work
+wish-git
+gjitenkai-git
+gwaei
+
+
+kanjitomo
