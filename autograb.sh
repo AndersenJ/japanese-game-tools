@@ -58,13 +58,13 @@ while true; do
     #convert jp.jpg -black-threshold 98% -negate jp2.jpg
 
     #this works well with Crosscode
-    #convert jp.jpg -black-threshold 75% -negate jp2.jpg
+    convert jp.jpg -black-threshold 75% -negate jp2.jpg
 
     #this works well with Xenoblade Chronicles 2
     #convert jp.jpg -black-threshold 45% -negate jp2.jpg
 
     #this works well with Celeste
-    convert jp.jpg -black-threshold 60% -negate jp2.jpg
+    #convert jp.jpg -black-threshold 60% -negate jp2.jpg
 
     tesseract jp2.jpg tout -l jpn --dpi 300 2> /dev/null
     echo "text parsed:"
