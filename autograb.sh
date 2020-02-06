@@ -69,10 +69,19 @@ while true; do
     tesseract jp2.jpg tout -l jpn --dpi 300 2> /dev/null
     echo "text parsed:"
     sed 's/ //g' tout.txt > tout2.txt
-    sed 's/\n//g' tout2.txt > tout3.txt
+    #sed 's/\n//g' tout2.txt > tout3.txt
+    tr -d "\n\r" < tout2.txt > tout3.txt
     cat tout3.txt
-    cat tout3.txt >> xenoblade.txt
-    ./tokenize.py `cat tout2.txt`
+
+    #uncomment to record all captured text
+    #cat tout3.txt >> xenoblade.txt
+
+    ./tokenize.py `cat tout3.txt` > tout4.txt
+    token=`shuf -n 1 tout4.txt`
+    echo $token
+    #myougiden --human "$token" > tout5.txt
+    myougiden -c --human "$token"
+    #cat tout5.txt
 
     #turns out trans has an API limit. Dang. Guess we can't use this.
     # python-myougiden has potential though.
