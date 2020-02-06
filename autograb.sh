@@ -80,6 +80,7 @@ while true; do
     token=`shuf -n 1 tout4.txt`
     echo $token
     #myougiden --human "$token" > tout5.txt
+    ./killless.sh&
     myougiden -c --human "$token"
     #cat tout5.txt
 
