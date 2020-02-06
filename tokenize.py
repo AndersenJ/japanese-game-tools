@@ -8,7 +8,8 @@ statement = sys.argv[1]
 tokenized_statement = tinysegmenter.tokenize(statement)
 #print(tokenized_statement)
 
-banlist = ["", " ", "は", "の", "で", "だっ", "する", "、", "", "。", "て", "が", "に", "お", "と"]
+banned_characters = ["①"]
+banlist = ["", " ", "は", "の", "で", "だっ", "する", "、", "", "。", "て", "が", "に", "お", "と", "よう", "な", "!", "い", "だ", "た", "<", ">", "一"]
 
 for token in tokenized_statement:
     if token not in banlist:
