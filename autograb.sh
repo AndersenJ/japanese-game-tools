@@ -44,7 +44,6 @@ echo "width: " $width
 echo "height: " $height
 relx="$(($x1+wx))"
 rely="$(($y1+yx))"
-#geometry="$width"x"$height"+"$relx"+"$rely"
 geometry="$width"x"$height"+"$x1"+"$y1"
 echo $geometry
 echo $windowid
@@ -69,7 +68,6 @@ while true; do
     tesseract jp2.jpg tout -l jpn --dpi 300 2> /dev/null
     echo "text parsed:"
     sed 's/ //g' tout.txt > tout2.txt
-    #sed 's/\n//g' tout2.txt > tout3.txt
     tr -d "\n\r" < tout2.txt > tout3.txt
     cat tout3.txt
 
@@ -78,16 +76,14 @@ while true; do
 
     ./tokenize.py `cat tout3.txt` > tout4.txt
     token=`shuf -n 1 tout4.txt`
-    echo $token
-    #myougiden --human "$token" > tout5.txt
-    ./killless.sh&
-    myougiden -c --human "$token"
-    #cat tout5.txt
+    if [ -z "$token" ]
+    then
+        echo "Text scan unsuccessful"
+    else
+        echo $token
+        ./killless.sh&
+        myougiden -c --human "$token"
+    fi
 
-    #turns out trans has an API limit. Dang. Guess we can't use this.
-    # python-myougiden has potential though.
-    #trans -s 日本語 --show-original n "`cat tout2.txt`"
-    #trans -s 日本語 -brief --show-original Y -i tout2.txt
-#    rm tout.txt tout2.txt jp.jpg
     sleep 8
 done
