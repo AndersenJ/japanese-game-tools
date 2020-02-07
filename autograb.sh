@@ -81,8 +81,7 @@ while true; do
         echo "Text scan unsuccessful"
     else
         echo $token
-        ./killless.sh&
-        myougiden -c --human "$token"
+        myougiden -c --human "$token" | cat
     fi
 
     sleep 8
