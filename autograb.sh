@@ -50,7 +50,7 @@ echo $windowid
 
 while true; do
     maim -g $geometry -q > jp.jpg
-    echo "screenshot captured"
+    #echo "screenshot captured"
 
     #time to preprocess the image before letting tesseract at it
     #this works well with hatoful boyfriend
