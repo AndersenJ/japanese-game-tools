@@ -163,6 +163,8 @@ banlist = ["",
 "一",
 "ん",
 "ン",
+"…",
+"です"
         "ある"]
 
 for token in tokenized_statement:
