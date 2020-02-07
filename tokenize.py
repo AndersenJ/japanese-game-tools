@@ -164,8 +164,9 @@ banlist = ["",
 "ん",
 "ン",
 "…",
-"です"
-        "ある"]
+"です",
+'"',
+"ある"]
 
 for token in tokenized_statement:
     if token not in banlist:
