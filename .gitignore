@@ -12,3 +12,6 @@ jp3.png
 jp3.jpg
 edict/
 *.pyc
+*.raw
+*.csv
+*.processed
