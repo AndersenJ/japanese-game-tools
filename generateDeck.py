@@ -14,9 +14,6 @@ with open("banlist.list") as ban:
     for word in ban:
         banlist.add(word.strip())
 
-print(banlist)
-
-
 print("Loading n5 list")
 with open("n5.list") as n5:
     for word in n5:
@@ -26,7 +23,6 @@ print("Loading n4 list")
 with open("n4.list") as n4:
     for word in n4:
         n4words.add(word.strip())
-
 
 occurrences = {}
 sentences = {}

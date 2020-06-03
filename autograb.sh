@@ -68,20 +68,20 @@ while true; do
     tesseract jp2.jpg tout -l jpn --dpi 300 2> /dev/null
     echo "text parsed:"
     sed 's/ //g' tout.txt > tout2.txt
-    tr -d "\n\r" < tout2.txt > tout3.txt
-    cat tout3.txt
+    #tr -d "\n\r" < tout2.txt > tout3.txt
+    cat tout2.txt
 
     #uncomment to record all captured text
     #cat tout3.txt >> xenoblade.txt
 
-    ./tokenize.py `cat tout3.txt` > tout4.txt
+    ./tokenize.py `cat tout2.txt` > tout4.txt
     token=`shuf -n 1 tout4.txt`
     if [ -z "$token" ]
     then
         echo "Text scan unsuccessful"
     else
         echo $token
-        myougiden -c --human "$token" | cat
+        myougiden -c --human -e whole "$token" | cat
     fi
 
     sleep 8

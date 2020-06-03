@@ -3,178 +3,36 @@
 import sys
 import tinysegmenter
 
+banlist = set()
+
+#print("Loading banlist")
+with open("banlist.list") as ban:
+    for word in ban:
+        banlist.add(word.strip())
+
+#print("Loading n5 list")
+with open("n5.list") as n5:
+    for word in n5:
+        banlist.add(word.strip())
+
+#print("Loading n4 list")
+with open("n4.list") as n4:
+    for word in n4:
+        banlist.add(word.strip())
+
+tokens = set()
+
+
 #statement = "私はアメリカ人"
-statement = sys.argv[1]
-tokenized_statement = tinysegmenter.tokenize(statement)
+#statement = sys.argv[1]
 #print(tokenized_statement)
 
-banned_characters = ["①"]
-banlist = ["",
-" ",
-"あ",
-"い",
-"う",
-"え",
-"お",
-"か",
-"き",
-"く",
-"け",
-"こ",
-"が",
-"ぎ",
-"ぐ",
-"げ",
-"ご",
-"さ",
-"し",
-"す",
-"せ",
-"そ",
-"ざ",
-"じ",
-"ず",
-"ぜ",
-"ぞ",
-"た",
-"ち",
-"つ",
-"て",
-"と",
-"だ",
-"ぢ",
-"づ",
-"で",
-"ど",
-"な",
-"に",
-"ぬ",
-"ね",
-"の",
-"は",
-"ひ",
-"ふ",
-"へ",
-"ほ",
-"ば",
-"び",
-"ぶ",
-"べ",
-"ぼ",
-"ぱ",
-"ぴ",
-"ぷ",
-"ぺ",
-"ぽ",
-"ま",
-"み",
-"む",
-"め",
-"も",
-"や",
-"ゆ",
-"よ",
-"ら",
-"り",
-"る",
-"れ",
-"ろ",
-"わ",
-"ゐ",
-"を",
-"ア",
-"イ",
-"ウ",
-"エ",
-"オ",
-"カ",
-"キ",
-"ク",
-"ケ",
-"コ",
-"ガ",
-"ギ",
-"グ",
-"ゲ",
-"ゴ",
-"サ",
-"シ",
-"ス",
-"セ",
-"ソ",
-"ザ",
-"ジ",
-"ズ",
-"ゼ",
-"ゾ",
-"タ",
-"チ",
-"ツ",
-"テ",
-"ト",
-"ダ",
-"ヂ",
-"ヅ",
-"デ",
-"ド",
-"ナ",
-"ニ",
-"ヌ",
-"ネ",
-"ノ",
-"ハ",
-"ヒ",
-"フ",
-"ヘ",
-"ホ",
-"バ",
-"ビ",
-"ブ",
-"ベ",
-"ボ",
-"パ",
-"ピ",
-"プ",
-"ペ",
-"ポ",
-"マ",
-"ミ",
-"ム",
-"メ",
-"モ",
-"ヤ",
-"ユ",
-"ヨ",
-"ラ",
-"リ",
-"ル",
-"レ",
-"ロ",
-"ワ",
-"ヲ",
-"だっ",
-"する",
-"、",
-"",
-"。",
-"!",
-"<",
-">",
-"一",
-"ん",
-"ン",
-"…",
-"です",
-'"',
-"...",
-"・",
-"・・",
-"・・・",
-"|",
-"‥",
-"`",
-"ある"]
+with open("tout.txt") as lines:
+    for line in lines:
+        tokenized_statement = tinysegmenter.tokenize(line.strip())
+        for token in tokenized_statement:
+            if token.strip() not in banlist and token.strip() != "":
+                tokens.add(token.strip())
 
-for token in tokenized_statement:
-    if token not in banlist:
-        print(token)
+for token in tokens:
+    print(token)
