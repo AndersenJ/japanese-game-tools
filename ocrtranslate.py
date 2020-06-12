@@ -5,6 +5,13 @@ import tinysegmenter
 import time
 import subprocess
 import os
+import argparse
+
+parser = argparse.ArgumentParser(description='Uses OCR to live-translate words from Japanese media')
+parser.add_argument('-o', nargs='?', default=0,
+        help='how many named pipes to send output to')
+args = parser.parse_args()
+print(args.o)
 
 banlist = set()
 
@@ -114,7 +121,9 @@ geometry = str(width) + "x" + str(height) + "+" + str(x1) + "+" + str(y1)
 print(geometry)
 print(windowid)
 
-def printDefs():
+def printDefs(outputs):
+    if not hasattr(printDefs, "counter"):
+        printDefs.counter = 0
     tokens = set()
     with open("tout2.txt") as lines:
         for line in lines:
@@ -124,20 +133,41 @@ def printDefs():
                 if t not in banlist and t != "":
                     tokens.add(t)
 
+    if len(tokens) == 0:
+        time.sleep(2)
     translated = []
     for token in tokens:
         try:
             definition = subprocess.check_output(["myougiden", "--human", "-c", "-e", "whole", token.replace("|","!")]).decode("utf-8", "ignore")
-            print("")
-            print("----------------------------------------------------------------------------")
-            print("")
-            print(token)
-            print(definition)
+            if len(outputs) == 0:
+                print("")
+                print("----------------------------------------------------------------------------")
+                print("")
+                print(token)
+                print(definition)
+            else:
+                print("outputting " + token + " to " + outputs[printDefs.counter % len(outputs)])
+                f = open(outputs[printDefs.counter % len(outputs)], "a")
+                f.write("\n\n\n---------------------------------------------------\n\n\n\n")
+                f.write(token)
+                f.write("\n")
+                f.write(definition)
+                f.close()
+                printDefs.counter += 1
             time.sleep(4)
         except:
             time.sleep(0.01)
             #print(token + " not found in dictionary")
     return
+
+numOutputs = int(args.o)
+outputs = []
+if numOutputs > 0:
+    for i in range(numOutputs):
+        os.system('mkfifo ' + str(i) + '.pipe')
+        #f = open(str(i) + '.pipe', 'a')
+        #outputs.append(f)
+        outputs.append(str(i) + '.pipe')
 
 
 while 1 == 1:
@@ -168,4 +198,4 @@ while 1 == 1:
     #uncomment to record all captured text
     #os.system('cat tout2.txt >> capture.txt')
 
-    printDefs()
+    printDefs(outputs)
