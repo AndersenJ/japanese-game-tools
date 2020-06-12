@@ -27,7 +27,7 @@ tokens = set()
 #statement = sys.argv[1]
 #print(tokenized_statement)
 
-with open("tout.txt") as lines:
+with open("tout2.txt") as lines:
     for line in lines:
         tokenized_statement = tinysegmenter.tokenize(line.strip())
         for token in tokenized_statement:

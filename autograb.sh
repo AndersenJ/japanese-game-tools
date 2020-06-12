@@ -74,7 +74,7 @@ while true; do
     #uncomment to record all captured text
     #cat tout3.txt >> xenoblade.txt
 
-    ./tokenize.py `cat tout2.txt` > tout4.txt
+    ./tokenize.py `cat tout2.txt` $1 > tout4.txt
     token=`shuf -n 1 tout4.txt`
     if [ -z "$token" ]
     then
