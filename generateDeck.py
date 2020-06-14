@@ -65,11 +65,16 @@ for character in sortedOccurrences:
         break
     print(str(count) + "/" + str(len(sortedOccurrences)) + "	" + character[0])
     try:
-        definition = subprocess.check_output(["myougiden", "--human", "-e", "whole", character[0].replace("|","!")]).decode("utf-8", "ignore").replace("\n", "<br>")
+        definition = subprocess.check_output(["myougiden", "-f", "--human", "-e", "whole", character[0].replace("|","!")]).decode("utf-8", "ignore").replace("\n", "<br>")
         outfile.write(character[0] + "<br>" + sentences[character[0]] + "|" + str(character[1]) + "|" + definition + "|\n")
         count += 1
     except:
-        definition = "error"
-        print("error processing " + character[0])
-        print("skipping " + character[0])
+        try:
+            definition = subprocess.check_output(["myougiden", "--human", "-e", "whole", character[0].replace("|","!")]).decode("utf-8", "ignore").replace("\n", "<br>")
+            outfile.write(character[0] + "<br>" + sentences[character[0]] + "|" + str(character[1]) + "|" + definition + "|\n")
+            count += 1
+        except:
+            definition = "error"
+            print("error processing " + character[0])
+            print("skipping " + character[0])
 outfile.close()

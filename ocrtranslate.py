@@ -138,7 +138,7 @@ def printDefs(outputs):
     translated = []
     for token in tokens:
         try:
-            definition = subprocess.check_output(["myougiden", "--human", "-c", "-e", "whole", token.replace("|","!")]).decode("utf-8", "ignore")
+            definition = subprocess.check_output(["myougiden", "-f", "--human", "-c", "-e", "whole", token.replace("|","!")]).decode("utf-8", "ignore")
             if len(outputs) == 0:
                 print("")
                 print("----------------------------------------------------------------------------")
@@ -154,9 +154,28 @@ def printDefs(outputs):
                 f.write(definition)
                 f.close()
                 printDefs.counter += 1
-            time.sleep(4)
+            time.sleep(3)
         except:
-            time.sleep(0.01)
+            try:
+                definition = subprocess.check_output(["myougiden", "--human", "-c", "-e", "whole", token.replace("|","!")]).decode("utf-8", "ignore")
+                if len(outputs) == 0:
+                    print("")
+                    print("----------------------------------------------------------------------------")
+                    print("")
+                    print(token)
+                    print(definition)
+                else:
+                    print("outputting " + token + " to " + outputs[printDefs.counter % len(outputs)])
+                    f = open(outputs[printDefs.counter % len(outputs)], "a")
+                    f.write("\n\n\n---------------------------------------------------\n\n\n\n")
+                    f.write(token)
+                    f.write("\n")
+                    f.write(definition)
+                    f.close()
+                    printDefs.counter += 1
+                time.sleep(3)
+            except:
+                time.sleep(0.01)
             #print(token + " not found in dictionary")
     return
 
