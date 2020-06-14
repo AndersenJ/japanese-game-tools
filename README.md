@@ -14,7 +14,7 @@ Tools for streaming (or just playing) games in Japanese
 * convert (can usually be found in a package labeled imagemagick or something)
 * tesseract
 
-You'll also need the japanese data pack for tesseract, and you'll need to install the tinysegmenter package through pip3.
+You'll also need the japanese data pack for tesseract, and you'll need to install the tinysegmenter3 package through pip3.
 
 ### Usage
 ```
@@ -34,6 +34,9 @@ Sometimes, you may want to output to multiple terminal windows at a time. In tha
 
 ## Deck Generator
 `generateDeck.py` is a tool for taking in a body of Japanese text and outputting a .csv document that can be imported into Anki. It takes the most common words in the document which aren't in banlist.list, n4.list, or n5.list, and makes flashcards for them. The flashcards have the target word and the whole line of text it was foudn on on the front, and the definition on the back.
+
+### Setup
+Setup is the same as for OCR Translate, but you don't need maim, tesseract, xdotool, or xinput.
 
 ### Usage
 `./generateDeck.py gametext.txt gamewords.csv`
