@@ -10,8 +10,11 @@ import argparse
 parser = argparse.ArgumentParser(description='Uses OCR to live-translate words from Japanese media')
 parser.add_argument('-o', nargs='?', default=0,
         help='how many named pipes to send output to')
+parser.add_argument('-s', nargs='?', default=3,
+        help='how many seconds to wait between each output')
 args = parser.parse_args()
 print(args.o)
+seconds = int(args.s)
 
 banlist = set()
 
@@ -121,7 +124,7 @@ geometry = str(width) + "x" + str(height) + "+" + str(x1) + "+" + str(y1)
 print(geometry)
 print(windowid)
 
-def printDefs(outputs):
+def printDefs(outputs, seconds):
     if not hasattr(printDefs, "counter"):
         printDefs.counter = 0
     tokens = set()
@@ -154,7 +157,7 @@ def printDefs(outputs):
                 f.write(definition)
                 f.close()
                 printDefs.counter += 1
-            time.sleep(3)
+            time.sleep(seconds)
         except:
             try:
                 definition = subprocess.check_output(["myougiden", "--human", "-c", "-e", "whole", token.replace("|","!")]).decode("utf-8", "ignore")
@@ -173,7 +176,7 @@ def printDefs(outputs):
                     f.write(definition)
                     f.close()
                     printDefs.counter += 1
-                time.sleep(3)
+                time.sleep(seconds)
             except:
                 time.sleep(0.01)
             #print(token + " not found in dictionary")
@@ -217,4 +220,4 @@ while 1 == 1:
     #uncomment to record all captured text
     #os.system('cat tout2.txt >> capture.txt')
 
-    printDefs(outputs)
+    printDefs(outputs, seconds)
