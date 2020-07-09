@@ -32,8 +32,15 @@ The basic usage is simple. Run `./ocrtranslate.py`. Click on the window you want
 
 Sometimes, you may want to output to multiple terminal windows at a time. In that case, you need to use the `-o` flag. This allows you to specify how many outputs you want to have. For example, `./ocrtranslate -o 4` would output to named pipes `0.pipe`, `1.pipe`, `2.pipe`, and `3.pipe`. You would then use the included `monitorPipe.sh` script to monitor the content of those pipes. In the first terminal window, you would do `./monitorPipe.sh 0.pipe`, and so on. The ocrtranslate.py script will alternate which pipe it outputs to sequentially.
 
+### Troubleshooting
+#### The OCR software is doing a poor job of recognizing text.
+Try looking at the jp2.png file that gets generated. That's the file that tesseract actually looks at. If that doesn't have sharp text, try tweaking the percentage value in line 204.
+
+#### It isn't recognizing my mouse clicks
+Please submit an issue with the output of `xinput --list`. I just need to modify the filter on line 52.
+
 ## Deck Generator
-`generateDeck.py` is a tool for taking in a body of Japanese text and outputting a .csv document that can be imported into Anki. It takes the most common words in the document which aren't in banlist.list, n4.list, or n5.list, and makes flashcards for them. The flashcards have the target word and the whole line of text it was foudn on on the front, and the definition on the back.
+`generateDeck.py` is a tool for taking in a body of Japanese text and outputting a .csv document that can be imported into Anki. It takes the most common words in the document which aren't in banlist.list, n4.list, or n5.list, and makes flashcards for them. The flashcards have the target word and the whole line of text it was found on on the front, and the definition on the back.
 
 ### Setup
 Setup is the same as for OCR Translate, but you don't need maim, tesseract, xdotool, or xinput.
