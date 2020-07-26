@@ -2,6 +2,7 @@
 
 import sys
 import tinysegmenter
+import nagisa
 import time
 import subprocess
 import os
@@ -59,7 +60,8 @@ time.sleep(1)
 
 #get a valid mouse id. This may not work for some mice.
 xinput = subprocess.Popen(('xinput', '--list'), stdout=subprocess.PIPE)
-grep1 = subprocess.Popen(('grep', '-i', '-m', '1', 'mouse\|alps'), stdin=xinput.stdout, stdout=subprocess.PIPE)
+grep0 = subprocess.Popen(('grep', '-v', 'ergosaurus'), stdin=xinput.stdout, stdout=subprocess.PIPE)
+grep1 = subprocess.Popen(('grep', '-i', '-m', '1', 'mouse\|alps\|logitech'), stdin=grep0.stdout, stdout=subprocess.PIPE)
 grep2 = subprocess.Popen(('grep', '-o', 'id=[0-9]\+'), stdin=grep1.stdout, stdout=subprocess.PIPE)
 mouseID = subprocess.check_output(('grep', '-o', '[0-9]\+'), stdin=grep2.stdout).decode("utf-8", "ignore")
 mouseID = int(mouseID)
@@ -127,10 +129,23 @@ print(windowid)
 def printDefs(outputs, seconds):
     if not hasattr(printDefs, "counter"):
         printDefs.counter = 0
+    if not hasattr(printDefs, "tokenization_counter"):
+        printDefs.tokenization_counter = 0
     tokens = set()
-    with open("tout2.txt") as lines:
+    with open("tout3.txt") as lines:
         for line in lines:
-            tokenized_statement = tinysegmenter.tokenize(line.strip())
+            #tinysegmenter
+            tinysegmenter_tokens = tinysegmenter.tokenize(line.strip())
+            #nagisa
+            nagisa_tokens = nagisa.tagging(line.strip()).words
+            if printDefs.tokenization_counter % 2 == 0:
+                print("tinysegmenter:")
+                tokenized_statement = tinysegmenter_tokens
+            else:
+                print("nagisa:")
+                tokenized_statement = nagisa_tokens
+            print(tokenized_statement)
+            printDefs.tokenization_counter += 1
             for token in tokenized_statement:
                 t = token.strip()
                 if t not in banlist and t != "":
@@ -201,7 +216,16 @@ while 1 == 1:
     #convert jp.jpg -black-threshold 98% -negate jp2.jpg
 
     #this works well with Crosscode
-    os.system('convert jp.jpg -black-threshold 75% -negate jp2.jpg')
+    #os.system('convert jp.jpg -black-threshold 75% -negate jp2.jpg')
+
+    #this works well with Valkyria Chronicles 4
+    #os.system('convert jp.jpg -black-threshold 44% -negate jp2.jpg')
+
+    #tokyo xanadu
+    #os.system('convert jp.jpg -black-threshold 60% -negate jp2.jpg')
+
+    #Pokemon SwSh
+    os.system('convert jp.jpg -black-threshold 60% jp2.jpg')
 
     #this works well with Xenoblade Chronicles 2
     #convert jp.jpg -black-threshold 45% -negate jp2.jpg
@@ -215,7 +239,8 @@ while 1 == 1:
     #it's only there in the first place because tesseract inserts
     #spaces between the characters where there should be none
     os.system("sed 's/ //g' tout.txt > tout2.txt")
-    os.system('cat tout2.txt')
+    os.system('tr -d "\n\r" < tout2.txt > tout3.txt')
+    os.system('cat tout3.txt')
 
     #uncomment to record all captured text
     #os.system('cat tout2.txt >> capture.txt')

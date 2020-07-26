@@ -14,7 +14,7 @@ Tools for streaming (or just playing) games in Japanese
 * convert (can usually be found in a package labeled imagemagick or something)
 * tesseract
 
-You'll also need the japanese data pack for tesseract, and you'll need to install the tinysegmenter3 package through pip3.
+You'll also need the japanese data pack for tesseract, and you'll need to install the tinysegmenter3 and nagisa packages through pip3.
 
 ### Usage
 ```

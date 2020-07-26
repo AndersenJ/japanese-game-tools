@@ -3,6 +3,7 @@
 import sys
 import codecs
 import tinysegmenter
+import nagisa
 import subprocess
 
 n4words = set()
@@ -31,7 +32,7 @@ print("Counting words")
 with codecs.open(sys.argv[1], 'r', encoding='utf-8', errors='ignore') as infile:
     for line in infile:
         #print(line)
-        tokenizedLine = tinysegmenter.tokenize(line.strip())
+        tokenizedLine = tinysegmenter.tokenize(line.strip()) + nagisa.tagging(line.strip()).words
         for token in tokenizedLine:
             if token not in banlist and token not in n5words and token not in n4words and token.strip() != "":
                 if token in occurrences.keys():
