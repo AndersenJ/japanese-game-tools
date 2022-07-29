@@ -7,6 +7,14 @@ import time
 import subprocess
 import os
 import argparse
+from sudachipy import tokenizer
+from sudachipy import dictionary
+from fugashi import Tagger
+
+fugashi_tagger = Tagger('-Owakati')
+
+sudachipy_tokenizer_obj = dictionary.Dictionary().create()
+sudachipy_mode = tokenizer.Tokenizer.SplitMode.C
 
 parser = argparse.ArgumentParser(description='Uses OCR to live-translate words from Japanese media')
 parser.add_argument('-o', nargs='?', default=0,
@@ -30,9 +38,9 @@ with open("n5.list") as n5:
         banlist.add(word.strip())
 
 #print("Loading n4 list")
-with open("n4.list") as n4:
-    for word in n4:
-        banlist.add(word.strip())
+#with open("n4.list") as n4:
+#    for word in n4:
+#        banlist.add(word.strip())
 
 
 print("select window with mouse click")
@@ -134,39 +142,44 @@ def printDefs(outputs, seconds):
     tokens = set()
     with open("tout3.txt") as lines:
         for line in lines:
-            #tinysegmenter
-            tinysegmenter_tokens = tinysegmenter.tokenize(line.strip())
-            #nagisa
-            nagisa_tokens = nagisa.tagging(line.strip()).words
-            if printDefs.tokenization_counter % 2 == 0:
+            if printDefs.tokenization_counter % 3 == 0:
+                tinysegmenter_tokens = tinysegmenter.tokenize(line.strip())
                 print("tinysegmenter:")
                 tokenized_statement = tinysegmenter_tokens
-            else:
+            elif printDefs.tokenization_counter % 3 == 1:
+                nagisa_tokens = nagisa.tagging(line.strip()).words
                 print("nagisa:")
                 tokenized_statement = nagisa_tokens
+            elif printDefs.tokenization_counter % 3 == 2:
+                print("fugashi (MeCab):")
+                tokenized_statement = [word.surface for word in fugashi_tagger(line.strip())]
+            else:
+                print("sudachipy:")
+                tokenized_statement = [m.surface() for m in sudachipy_tokenizer_obj.tokenize(line.strip(), sudachipy_mode)]
             print(tokenized_statement)
             printDefs.tokenization_counter += 1
             for token in tokenized_statement:
                 t = token.strip()
+                t = sudachipy_tokenizer_obj.tokenize(t, sudachipy_mode)[0].dictionary_form()
                 if t not in banlist and t != "":
                     tokens.add(t)
 
     if len(tokens) == 0:
-        time.sleep(2)
+        time.sleep(1)
     translated = []
     for token in tokens:
         try:
             definition = subprocess.check_output(["myougiden", "-f", "--human", "-c", "-e", "whole", token.replace("|","!")]).decode("utf-8", "ignore")
             if len(outputs) == 0:
                 print("")
-                print("----------------------------------------------------------------------------")
+                print("----------------------------------------------------------------------")
                 print("")
                 print(token)
                 print(definition)
             else:
                 print("outputting " + token + " to " + outputs[printDefs.counter % len(outputs)])
                 f = open(outputs[printDefs.counter % len(outputs)], "a")
-                f.write("\n\n\n---------------------------------------------------\n\n\n\n")
+                f.write("\n\n\n---------------------------------------------\n\n\n\n")
                 f.write(token)
                 f.write("\n")
                 f.write(definition)
@@ -178,14 +191,14 @@ def printDefs(outputs, seconds):
                 definition = subprocess.check_output(["myougiden", "--human", "-c", "-e", "whole", token.replace("|","!")]).decode("utf-8", "ignore")
                 if len(outputs) == 0:
                     print("")
-                    print("----------------------------------------------------------------------------")
+                    print("----------------------------------------------------------------------")
                     print("")
                     print(token)
                     print(definition)
                 else:
                     print("outputting " + token + " to " + outputs[printDefs.counter % len(outputs)])
                     f = open(outputs[printDefs.counter % len(outputs)], "a")
-                    f.write("\n\n\n---------------------------------------------------\n\n\n\n")
+                    f.write("\n\n\n---------------------------------------------\n\n\n\n")
                     f.write(token)
                     f.write("\n")
                     f.write(definition)
@@ -225,7 +238,12 @@ while 1 == 1:
     #os.system('convert jp.jpg -black-threshold 60% -negate jp2.jpg')
 
     #Pokemon SwSh
-    os.system('convert jp.jpg -black-threshold 60% jp2.jpg')
+    #os.system('convert jp.jpg -black-threshold 60% jp2.jpg')
+
+    #Baten Kaitos
+    #os.system('convert jp.jpg -black-threshold 35% jp2.jpg')
+    #os.system('convert jp2.jpg -white-threshold 35% jp3.jpg')
+    os.system('convert jp.jpg -threshold 39% jp2.jpg')
 
     #this works well with Xenoblade Chronicles 2
     #convert jp.jpg -black-threshold 45% -negate jp2.jpg
